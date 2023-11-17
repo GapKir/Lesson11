@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_singer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/item_background"
+    android:layout_margin="16dp"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/iv_singer_photo"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/taylor_swift" />
+
+    <TextView
+        android:id="@+id/tv_singer_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textSize="24sp"
+        android:ellipsize="end"
+        android:layout_marginStart="44dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_singer_birth"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_singer_photo"
+        app:layout_constraintTop_toTopOf="@+id/iv_singer_photo"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Taylor Swift" />
+
+    <TextView
+        android:id="@+id/tv_singer_birth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_singer_photo"
+        app:layout_constraintEnd_toEndOf="@+id/tv_singer_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_singer_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_singer_name"
+        tools:text="USA" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btn_playlist"
+        android:title="@string/playlist"
+        android:icon="@drawable/play_list"
+        android:orderInCategory="1"/>
+
+    <item
+        android:id="@+id/btn_singer"
+        android:title="@string/singers"
+        android:icon="@drawable/singers"
+        android:orderInCategory="2"/>
+    <item
+        android:id="@+id/btn_settings"
+        android:title="@string/settings"
+        android:icon="@drawable/settings"
+        android:orderInCategory="3"/>
+
+</menu>

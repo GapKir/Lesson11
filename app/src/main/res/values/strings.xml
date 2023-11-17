@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Lesson11</string>
+    <string name="playlist">Playlist</string>
+    <string name="singers">Singers</string>
+    <string name="settings">Settings</string>
+    <string name="app_package">App package:\n%s</string>
+    <string name="app_names">App name: \n%s</string>
+    <string name="app_version">App version: \n%s</string>
+</resources>
