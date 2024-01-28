@@ -1,13 +1,13 @@
-package com.example.lesson11.Utils;
+package com.example.lesson11.Utils
 
-import com.example.lesson11.model.Singer;
-import com.example.lesson11.model.Song;
+import com.example.lesson11.model.Singer
+import com.example.lesson11.model.Song
 
-public interface Actions {
-    void goToSettings();
-    void goToHome();
-    void goToSingers();
-    void playSong(Song song);
-    void showSingleSinger(Singer singer);
-    void showFilteredSongsFromSinger(Singer singer);
+interface Actions {
+    fun goToSettings()
+    fun goToHome()
+    fun goToSingers()
+    fun playSong(song: Song)
+    fun showSingleSinger(singer: Singer)
+    fun showFilteredSongsFromSinger(singer: Singer)
 }

@@ -1,162 +1,122 @@
-package com.example.lesson11;
+package com.example.lesson11
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
+import android.view.MenuItem
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.example.lesson11.Utils.Actions
+import com.example.lesson11.Utils.Constants
+import com.example.lesson11.databinding.ActivityMainBinding
+import com.example.lesson11.model.Singer
+import com.example.lesson11.model.Song
+import com.example.lesson11.services.MusicService
+import com.example.lesson11.ui.PlaylistFragment
+import com.example.lesson11.ui.SettingsFragment
+import com.example.lesson11.ui.SingerFragment
 
-import android.media.MediaPlayer;
-import android.os.Build;
-import android.os.Bundle;
+class MainActivity : AppCompatActivity(), Actions, ServiceConnection {
+    private lateinit var binding: ActivityMainBinding
+    private var musicService: MusicService? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-import com.example.lesson11.Utils.Actions;
-import com.example.lesson11.Utils.Constants;
-import com.example.lesson11.databinding.ActivityMainBinding;
-import com.example.lesson11.model.Singer;
-import com.example.lesson11.model.Song;
-import com.example.lesson11.ui.PlaylistFragment;
-import com.example.lesson11.ui.SettingsFragment;
-import com.example.lesson11.ui.SingerFragment;
-
-public class MainActivity extends AppCompatActivity implements Actions {
-    private ActivityMainBinding binding;
-    private MediaPlayer player;
-    private boolean isPlaying = false;
-    private Song currentSongPlaying;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        initView();
-        initListeners();
-
+        initView()
+        initListeners()
+        initService()
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopPlayer();
+    override fun goToSettings() {
+        openFragment(SettingsFragment())
+        binding.bottomNavigationView.menu.findItem(R.id.btn_settings).setChecked(true)
     }
 
-    @Override
-    public void goToSettings() {
-        openFragment(new SettingsFragment());
-        binding.bottomNavigationView.getMenu().findItem(R.id.btn_settings).setChecked(true);
+    override fun goToHome() {
+        openFragment(PlaylistFragment())
+        binding.bottomNavigationView.menu.findItem(R.id.btn_playlist).setChecked(true)
     }
 
-    @Override
-    public void goToHome() {
-        openFragment(new PlaylistFragment());
-        binding.bottomNavigationView.getMenu().findItem(R.id.btn_playlist).setChecked(true);
+    override fun goToSingers() {
+        openFragment(SingerFragment())
+        binding.bottomNavigationView.menu.findItem(R.id.btn_singer).setChecked(true)
     }
 
-    @Override
-    public void goToSingers() {
-        openFragment(new SingerFragment());
-        binding.bottomNavigationView.getMenu().findItem(R.id.btn_singer).setChecked(true);
-    }
-
-    @Override
-    public void playSong(Song song) {
-        if (player == null) {
-            startSong(song);
-        } else {
-            if (!isPlayingSongMatching(song)){
-                startAnotherSong(song);
-            } else if (isPlaying) {
-                pauseSong();
-            } else {
-                continuePlayingSong();
-            }
-        }
+    override fun playSong(song: Song) {
+        musicService!!.playSong(song)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void showSingleSinger(Singer singer) {
-        SingerFragment singerFragment = new SingerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.KEY_FOR_SEND_SINGER, singer);
-        singerFragment.setArguments(bundle);
-        openFragment(singerFragment);
-        binding.bottomNavigationView.getMenu().findItem(R.id.btn_singer).setChecked(true);
+    override fun showSingleSinger(singer: Singer) {
+        val singerFragment = SingerFragment()
+        val bundle = Bundle()
+        bundle.putParcelable(Constants.KEY_FOR_SEND_SINGER, singer)
+        singerFragment.arguments = bundle
+        openFragment(singerFragment)
+        binding.bottomNavigationView.menu.findItem(R.id.btn_singer).setChecked(true)
     }
 
-    @Override
-    public void showFilteredSongsFromSinger(Singer singer) {
-        PlaylistFragment playlistFragment = new PlaylistFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.KEY_FOR_SEND_SINGER, singer);
-        playlistFragment.setArguments(bundle);
-        openFragment(playlistFragment);
-        binding.bottomNavigationView.getMenu().findItem(R.id.btn_playlist).setChecked(true);
+    override fun showFilteredSongsFromSinger(singer: Singer) {
+        val playlistFragment = PlaylistFragment()
+        val bundle = Bundle()
+        bundle.putParcelable(Constants.KEY_FOR_SEND_SINGER, singer)
+        playlistFragment.arguments = bundle
+        openFragment(playlistFragment)
+        binding.bottomNavigationView.menu.findItem(R.id.btn_playlist).setChecked(true)
     }
 
-    private void startAnotherSong(Song song) {
-        player.stop();
-        player.release();
-        player = MediaPlayer.create(this, song.getPathToSong());
-        player.start();
-        isPlaying = true;
-        currentSongPlaying = song;
+    override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
+        val binder = service as MusicService.MyBinder
+        musicService = binder.getService()
     }
 
-    private void continuePlayingSong() {
-        player.start();
-        isPlaying = true;
+    override fun onServiceDisconnected(p0: ComponentName?) {
+        musicService = null
     }
 
-    private void pauseSong() {
-        player.pause();
-        isPlaying = false;
+
+    private fun initView() {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragments_container, PlaylistFragment())
+            .commit()
     }
 
-    private void startSong(Song song) {
-        player = MediaPlayer.create(this, song.getPathToSong());
-        player.start();
-        isPlaying = true;
-        currentSongPlaying = song;
-    }
-    private void stopPlayer(){
-        if (player != null) {
-            player.release();
-            player = null;
-            isPlaying = false;
-            currentSongPlaying = null;
+    private fun initListeners() {
+        binding.bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.btn_settings -> {
+                    goToSettings()
+                }
+                R.id.btn_playlist -> {
+                    goToHome()
+                }
+                else -> {
+                    goToSingers()
+                }
+            }
+            true
         }
     }
 
-    private boolean isPlayingSongMatching(Song song) {
-        return currentSongPlaying.getId() == song.getId();
+    private fun openFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .add(R.id.fragments_container, fragment)
+            .commit()
     }
 
-    private void initView() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragments_container, new PlaylistFragment())
-                .commit();
+    private fun initService() {
+        val intent = Intent(this, MusicService::class.java)
+        bindService(intent, this, BIND_AUTO_CREATE)
+        startService(intent)
     }
 
-    private void initListeners() {
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.btn_settings) {
-                goToSettings();
-            } else if (item.getItemId() == R.id.btn_playlist) {
-                goToHome();
-            } else {
-                goToSingers();
-            }
-            return true;
-        });
-    }
-
-    private void openFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .addToBackStack(null)
-                .add(R.id.fragments_container, fragment)
-                .commit();
-    }
 }
