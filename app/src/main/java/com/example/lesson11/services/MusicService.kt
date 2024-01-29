@@ -82,6 +82,7 @@ class MusicService: Service() {
             currentSongPlaying = null
         }
         stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     private fun isPlayingSongMatching(song: Song): Boolean {

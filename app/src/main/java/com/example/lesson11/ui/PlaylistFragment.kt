@@ -20,7 +20,7 @@ import com.example.lesson11.model.SongService
 
 class PlaylistFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistBinding
-    lateinit var adapter: PlayListAdapter
+    private lateinit var adapter: PlayListAdapter
     private lateinit var songService: SongService
     private lateinit var actions: Actions
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
@@ -63,13 +63,12 @@ class PlaylistFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun createAdapter() {
-        adapter = PlayListAdapter()
+        adapter = PlayListAdapter(actions)
         if (arguments == null) {
             adapter.setSongList(songService.getSongList())
         } else {
             filterSongs()
         }
-        adapter.setActions(actions)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext())
         binding.recycler.layoutManager = layoutManager
         binding.recycler.adapter = adapter
@@ -81,7 +80,7 @@ class PlaylistFragment : Fragment() {
         val basicList = songService.getSongList()
         val filteredList: MutableList<Song> = ArrayList()
         for (song in basicList) {
-            if (song.singer!!.name == singer!!.name) {
+            if (song.singer.name == singer!!.name) {
                 filteredList.add(song)
             }
         }

@@ -10,17 +10,14 @@ import com.example.lesson11.databinding.ItemSongBinding
 import com.example.lesson11.model.Singer
 import com.example.lesson11.model.Song
 
-class PlayListAdapter : RecyclerView.Adapter<PlayListAdapter.PlayListViewHolder>(), View.OnClickListener {
+class PlayListAdapter(
+    private val actions: Actions
+) : RecyclerView.Adapter<PlayListAdapter.PlayListViewHolder>(), View.OnClickListener {
     private var songList: List<Song>? = null
-    private var actions: Actions? = null
     private var currentlyPlayingSong: Song? = null
     fun setSongList(songList: List<Song>) {
         this.songList = songList
         notifyItemChanged(0, songList.size)
-    }
-
-    fun setActions(actions: Actions?) {
-        this.actions = actions
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
@@ -46,13 +43,13 @@ class PlayListAdapter : RecyclerView.Adapter<PlayListAdapter.PlayListViewHolder>
             playSong(song)
         } else if (view.id == R.id.item_song) {
             val singer = view.tag as Singer
-            actions!!.showSingleSinger(singer)
+            actions.showSingleSinger(singer)
         }
     }
 
     private fun playSong(song: Song) {
         updateSongState(song)
-        actions!!.playSong(song)
+        actions.playSong(song)
         currentlyPlayingSong = song
     }
 
