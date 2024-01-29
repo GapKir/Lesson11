@@ -1,11 +1,12 @@
-package com.example.lesson11.services
+package com.example.media_player.services
 
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import com.example.lesson11.model.Song
+import com.example.media_player.model.Song
+import com.example.media_player.ui.PlayingSongListener
 
 class MusicService: Service() {
     private var myBinder = MyBinder()
@@ -13,6 +14,7 @@ class MusicService: Service() {
     private var isPlaying = false
     private var currentSongPlaying: Song? = null
     private lateinit var notificationHelper: NotificationHelper
+    private val currentSongListeners = mutableSetOf<PlayingSongListener>()
     override fun onCreate() {
         super.onCreate()
         notificationHelper = NotificationHelper(this)
@@ -44,11 +46,16 @@ class MusicService: Service() {
         }
     }
 
+    fun setCallbacks(callback: PlayingSongListener){
+        currentSongListeners.add(callback)
+    }
+
     private fun startSong(song: Song) {
         player = MediaPlayer.create(this, song.pathToSong)
         player!!.start()
         isPlaying = true
         currentSongPlaying = song
+        notifyListeners()
         showNotification()
     }
 
@@ -59,18 +66,21 @@ class MusicService: Service() {
         player!!.start()
         isPlaying = true
         currentSongPlaying = song
+        notifyListeners()
         showNotification()
     }
 
     private fun continuePlayingSong() {
         player!!.start()
         isPlaying = true
+        notifyListeners()
         showNotification()
     }
 
     private fun pauseSong() {
         player!!.pause()
         isPlaying = false
+        notifyListeners()
         showNotification(showPauseIcon = false)
     }
 
@@ -79,6 +89,7 @@ class MusicService: Service() {
             player!!.release()
             player = null
             isPlaying = false
+            notifyListeners()
             currentSongPlaying = null
         }
         stopForeground(STOP_FOREGROUND_REMOVE)
@@ -92,6 +103,10 @@ class MusicService: Service() {
     private fun showNotification(showPauseIcon: Boolean = true){
         val notification = notificationHelper.createMusicNotification(currentSongPlaying!!, showPauseIcon)
         startForeground(NotificationHelper.NOTIFICATION_ID, notification)
+    }
+
+    private fun notifyListeners(){
+        currentSongListeners.forEach { it.invoke(currentSongPlaying!!) }
     }
 
     inner class MyBinder: Binder(){

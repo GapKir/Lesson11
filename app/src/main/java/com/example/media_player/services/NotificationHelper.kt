@@ -1,4 +1,4 @@
-package com.example.lesson11.services
+package com.example.media_player.services
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -10,9 +10,9 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
-import com.example.lesson11.MainActivity
-import com.example.lesson11.R
-import com.example.lesson11.model.Song
+import com.example.media_player.MainActivity
+import com.example.media_player.R
+import com.example.media_player.model.Song
 
 class NotificationHelper(
     private val context: Context

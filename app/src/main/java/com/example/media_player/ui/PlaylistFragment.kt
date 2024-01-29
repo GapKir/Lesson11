@@ -1,4 +1,4 @@
-package com.example.lesson11.ui
+package com.example.media_player.ui
 
 import android.os.Build
 import android.os.Bundle
@@ -9,20 +9,25 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lesson11.App
-import com.example.lesson11.Utils.Actions
-import com.example.lesson11.Utils.Constants
-import com.example.lesson11.adapters.PlayListAdapter
-import com.example.lesson11.databinding.FragmentPlaylistBinding
-import com.example.lesson11.model.Singer
-import com.example.lesson11.model.Song
-import com.example.lesson11.model.SongService
+import com.example.media_player.App
+import com.example.media_player.Utils.Actions
+import com.example.media_player.Utils.Constants
+import com.example.media_player.adapters.PlayListAdapter
+import com.example.media_player.databinding.FragmentPlaylistBinding
+import com.example.media_player.model.Singer
+import com.example.media_player.model.Song
+import com.example.media_player.model.SongsRepository
 
+typealias PlayingSongListener = (Song) -> Unit
 class PlaylistFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistBinding
     private lateinit var adapter: PlayListAdapter
-    private lateinit var songService: SongService
+    private lateinit var songsRepository: SongsRepository
     private lateinit var actions: Actions
+
+    val currentPlayingSongListener: PlayingSongListener = {song ->
+        adapter.updateSongState(song)
+    }
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +48,7 @@ class PlaylistFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onDestroyView() {
         super.onDestroyView()
-        adapter.setSongList(songService.getSongList())
+        adapter.setSongList(songsRepository.getSongList())
     }
 
     private fun initListeners() {
@@ -56,7 +61,7 @@ class PlaylistFragment : Fragment() {
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private fun initView() {
         val app = requireActivity().applicationContext as App
-        songService = app.songService
+        songsRepository = app.songsRepository
         actions = requireActivity() as Actions
         createAdapter()
     }
@@ -65,7 +70,7 @@ class PlaylistFragment : Fragment() {
     private fun createAdapter() {
         adapter = PlayListAdapter(actions)
         if (arguments == null) {
-            adapter.setSongList(songService.getSongList())
+            adapter.setSongList(songsRepository.getSongList())
         } else {
             filterSongs()
         }
@@ -77,7 +82,7 @@ class PlaylistFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun filterSongs() {
         val singer = requireArguments().getParcelable(Constants.KEY_FOR_SEND_SINGER, Singer::class.java)
-        val basicList = songService.getSongList()
+        val basicList = songsRepository.getSongList()
         val filteredList: MutableList<Song> = ArrayList()
         for (song in basicList) {
             if (song.singer.name == singer!!.name) {

@@ -1,14 +1,14 @@
-package com.example.lesson11.adapters
+package com.example.media_player.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lesson11.R
-import com.example.lesson11.Utils.Actions
-import com.example.lesson11.databinding.ItemSongBinding
-import com.example.lesson11.model.Singer
-import com.example.lesson11.model.Song
+import com.example.media_player.R
+import com.example.media_player.Utils.Actions
+import com.example.media_player.databinding.ItemSongBinding
+import com.example.media_player.model.Singer
+import com.example.media_player.model.Song
 
 class PlayListAdapter(
     private val actions: Actions
@@ -18,6 +18,21 @@ class PlayListAdapter(
     fun setSongList(songList: List<Song>) {
         this.songList = songList
         notifyItemChanged(0, songList.size)
+    }
+
+    fun updateSongState(song: Song) {
+        if (currentlyPlayingSong == null) {
+            song.isPlaying = true
+            notifyItemChanged(songList!!.indexOf(song))
+        } else if (currentlyPlayingSong!!.id != song.id) {
+            currentlyPlayingSong!!.isPlaying = false
+            song.isPlaying = !song.isPlaying
+            notifyItemChanged(songList!!.indexOf(currentlyPlayingSong!!))
+            notifyItemChanged(songList!!.indexOf(song))
+        } else {
+            currentlyPlayingSong!!.isPlaying = !currentlyPlayingSong!!.isPlaying
+            notifyItemChanged(songList!!.indexOf(currentlyPlayingSong!!))
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
@@ -48,24 +63,8 @@ class PlayListAdapter(
     }
 
     private fun playSong(song: Song) {
-        updateSongState(song)
         actions.playSong(song)
         currentlyPlayingSong = song
-    }
-
-    private fun updateSongState(song: Song) {
-        if (currentlyPlayingSong == null) {
-            song.isPlaying = true
-            notifyItemChanged(songList!!.indexOf(song))
-        } else if (currentlyPlayingSong!!.id != song.id) {
-            currentlyPlayingSong!!.isPlaying = false
-            song.isPlaying = !song.isPlaying
-            notifyItemChanged(songList!!.indexOf(currentlyPlayingSong!!))
-            notifyItemChanged(songList!!.indexOf(song))
-        } else {
-            currentlyPlayingSong!!.isPlaying = !currentlyPlayingSong!!.isPlaying
-            notifyItemChanged(songList!!.indexOf(currentlyPlayingSong!!))
-        }
     }
 
     class PlayListViewHolder(private val binding: ItemSongBinding) : RecyclerView.ViewHolder(

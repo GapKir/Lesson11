@@ -1,12 +1,12 @@
-package com.example.lesson11.model
+package com.example.media_player.model
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.lesson11.R
+import com.example.media_player.R
 import java.time.Duration
 
 @RequiresApi(Build.VERSION_CODES.O)
-class SongService {
+class SongsRepository {
     private val songList: MutableList<Song> = ArrayList()
 
     init {

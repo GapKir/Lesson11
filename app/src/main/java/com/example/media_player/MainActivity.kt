@@ -1,4 +1,4 @@
-package com.example.lesson11
+package com.example.media_player
 
 import android.content.ComponentName
 import android.content.Intent
@@ -10,19 +10,28 @@ import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.lesson11.Utils.Actions
-import com.example.lesson11.Utils.Constants
-import com.example.lesson11.databinding.ActivityMainBinding
-import com.example.lesson11.model.Singer
-import com.example.lesson11.model.Song
-import com.example.lesson11.services.MusicService
-import com.example.lesson11.ui.PlaylistFragment
-import com.example.lesson11.ui.SettingsFragment
-import com.example.lesson11.ui.SingerFragment
+import com.example.media_player.Utils.Actions
+import com.example.media_player.Utils.Constants
+import com.example.media_player.databinding.ActivityMainBinding
+import com.example.media_player.model.Singer
+import com.example.media_player.model.Song
+import com.example.media_player.services.MusicService
+import com.example.media_player.ui.PlayingSongListener
+import com.example.media_player.ui.PlaylistFragment
+import com.example.media_player.ui.SettingsFragment
+import com.example.media_player.ui.SingerFragment
 
 class MainActivity : AppCompatActivity(), Actions, ServiceConnection {
     private lateinit var binding: ActivityMainBinding
     private var musicService: MusicService? = null
+
+    private val songListenerFromService: PlayingSongListener = {song ->
+        val playlistFragment = supportFragmentManager
+            .findFragmentById(R.id.fragments_container)
+        if (playlistFragment is PlaylistFragment){
+            playlistFragment.currentPlayingSongListener(song)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -74,6 +83,8 @@ class MainActivity : AppCompatActivity(), Actions, ServiceConnection {
     override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
         val binder = service as MusicService.MyBinder
         musicService = binder.getService()
+
+        musicService!!.setCallbacks(songListenerFromService)
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {

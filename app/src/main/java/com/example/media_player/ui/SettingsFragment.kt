@@ -1,14 +1,14 @@
-package com.example.lesson11.ui
+package com.example.media_player.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.lesson11.BuildConfig
-import com.example.lesson11.R
-import com.example.lesson11.Utils.Actions
-import com.example.lesson11.databinding.FragmentSettingsBinding
+import com.example.media_player.BuildConfig
+import com.example.media_player.R
+import com.example.media_player.Utils.Actions
+import com.example.media_player.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding

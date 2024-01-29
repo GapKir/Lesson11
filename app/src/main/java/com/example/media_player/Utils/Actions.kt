@@ -1,7 +1,7 @@
-package com.example.lesson11.Utils
+package com.example.media_player.Utils
 
-import com.example.lesson11.model.Singer
-import com.example.lesson11.model.Song
+import com.example.media_player.model.Singer
+import com.example.media_player.model.Song
 
 interface Actions {
     fun goToSettings()

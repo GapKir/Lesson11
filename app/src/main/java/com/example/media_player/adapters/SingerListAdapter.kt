@@ -1,12 +1,12 @@
-package com.example.lesson11.adapters
+package com.example.media_player.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lesson11.Utils.Actions
-import com.example.lesson11.databinding.ItemSingerBinding
-import com.example.lesson11.model.Singer
+import com.example.media_player.Utils.Actions
+import com.example.media_player.databinding.ItemSingerBinding
+import com.example.media_player.model.Singer
 
 class SingerListAdapter : RecyclerView.Adapter<SingerListAdapter.PlayListViewHolder>(),
     View.OnClickListener {

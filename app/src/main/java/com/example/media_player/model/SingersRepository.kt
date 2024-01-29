@@ -1,6 +1,6 @@
-package com.example.lesson11.model
+package com.example.media_player.model
 
-class SingersService{
+class SingersRepository{
     private val singers: MutableList<Singer> = mutableListOf()
 
     init {

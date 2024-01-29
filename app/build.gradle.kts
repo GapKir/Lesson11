@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.lesson11"
+    namespace = "com.example.media_player"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.lesson11"
+        applicationId = "com.example.media_player"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

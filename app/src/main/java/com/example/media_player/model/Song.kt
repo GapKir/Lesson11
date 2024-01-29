@@ -1,4 +1,4 @@
-package com.example.lesson11.model
+package com.example.media_player.model
 
 import java.time.Duration
 

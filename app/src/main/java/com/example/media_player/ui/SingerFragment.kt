@@ -1,4 +1,4 @@
-package com.example.lesson11.ui
+package com.example.media_player.ui
 
 import android.os.Build
 import android.os.Bundle
@@ -9,17 +9,17 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lesson11.App
-import com.example.lesson11.Utils.Actions
-import com.example.lesson11.Utils.Constants
-import com.example.lesson11.adapters.SingerListAdapter
-import com.example.lesson11.databinding.FragmentSingersBinding
-import com.example.lesson11.model.Singer
-import com.example.lesson11.model.SingersService
+import com.example.media_player.App
+import com.example.media_player.Utils.Actions
+import com.example.media_player.Utils.Constants
+import com.example.media_player.adapters.SingerListAdapter
+import com.example.media_player.databinding.FragmentSingersBinding
+import com.example.media_player.model.Singer
+import com.example.media_player.model.SingersRepository
 
 class SingerFragment : Fragment() {
     private lateinit var binding: FragmentSingersBinding
-    private var singersService: SingersService? = null
+    private var singersRepository: SingersRepository? = null
     private lateinit var adapter: SingerListAdapter
     private var actions: Actions? = null
 
@@ -41,13 +41,13 @@ class SingerFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        adapter.setSingerList(singersService!!.getSingers())
+        adapter.setSingerList(singersRepository!!.getSingers())
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private fun initView() {
         val app = requireActivity().applicationContext as App
-        singersService = app.singersService
+        singersRepository = app.singersRepository
         actions = requireActivity() as Actions
         createAdapter()
     }
@@ -56,7 +56,7 @@ class SingerFragment : Fragment() {
     private fun createAdapter() {
         adapter = SingerListAdapter()
         if (arguments == null) {
-            adapter.setSingerList(singersService!!.getSingers())
+            adapter.setSingerList(singersRepository!!.getSingers())
         } else {
             val singer = requireArguments().getParcelable(
                 Constants.KEY_FOR_SEND_SINGER,
